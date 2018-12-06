@@ -8,6 +8,38 @@
 
 	$id = $_SESSION['staffID'];
 
+  if(isset($_POST['submit'])){
+    $sbjName = sanitize($_POST['sbjName']);
+    $sbjDesc = sanitize($_POST['sbjDesc']);
+    $upORin = sanitize($_POST['upORin']);
+    $uID = sanitize($_POST['uID']);
+
+    if($upORin == "update"){
+      $sql = "UPDATE subject SET subjectName = '$sbjName', subjectDesc = '$sbjDesc' WHERE subjectID = '$uID'";
+      $query = mysqli_query($db, $sql);
+    }else{
+      $sql = "INSERT INTO subject (subjectName, subjectDesc) VALUES ('$sbjName', '$sbjDesc')";
+      $query = mysqli_query($db, $sql);
+    }
+  }
+
+  if(isset($_GET['delete'])){
+    $dID = sanitize($_GET['delete']);
+
+    $sql = "DELETE FROM subject WHERE subjectID = '$dID'";
+    $query = mysqli_query($db, $sql);
+  }
+
+  if(isset($_GET['update'])){
+    $uID = sanitize($_GET['update']);
+
+    $sql = "SELECT * FROM subject WHERE subjectID = '$uID'";
+    $query = mysqli_query($db, $sql);
+    $row = mysqli_fetch_array($query);
+    $sbjName = $row['subjectName'];
+    $sbjDesc = $row['subjectDesc'];
+  }
+
 	$sql = "SELECT * FROM staff ";
 	$query = mysqli_query($db, $sql);
 	$row = mysqli_fetch_array($query);
@@ -16,30 +48,6 @@
 		$img = $row['staffPic'];
 	}
 
-	$sql = "SELECT count(subjectName) as amtsbj FROM subject";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSbj = $row['amtsbj'];
-
-	$sql = "SELECT count(ClassName) as amtCls FROM class";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtCls = $row['amtCls'];
-
-	$sql = "SELECT count(carryMarkID) as amtcrm FROM carrymark";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtcmk = $row['amtcrm'];
-
-	$sql = "SELECT count(staffID) as amtSt FROM staff";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSt = $row['amtSt'];
-
-	$sql = "SELECT count(StudentID) as amtSdt FROM student";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSdt = $row['amtSdt'];
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -84,27 +92,73 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           </div>
 				    <!-- /inner_content_w3_agile_info-->
             <div class="inner_content_w3_agile_info two_in" >
-              <h2 class="w3_inner_tittle">Insert Subject</h2>
+              <h2 class="w3_inner_tittle">Subject</h2>
                     <!-- tables -->
                     <div class="agile-tables">
                       <div class="w3l-table-info agile_info_shadow">
-                        <table class="table table-hover">
-                          <tr>
-                            <th style="display:none;"></th>
-                            <th>#</th>
-                            <th>Matric Number</th>
-                            <th>Lab</th>
-                            <th>Quizzes & Assignments</th>
-                            <th>Test 1</th>
-                            <th>Test 2</th>
-                            <th>Proposal</th>
-                            <th>Presentation</th>
-                            <th>Report</th>
-                            <th>Total</th>
-                          </tr>
-                      </table>
+                        <h3 class="w3_inner_title two"><?=((isset($_GET['update']))?'Update':'Insert')?> Subject</h3><br>
+                        <form action="adminSubject.php" method="post" onsubmit="return confirm('Are you sure?')">
+                          <table class="table table-hover">
+                            <input style="display:none" name="upORin" value="<?=((isset($_GET['update']))?'update':'insert')?>">
+                            <input style="display:none" name="uID" value="<?=((isset($_GET['update']))?$uID:'')?>"
+                            <tr>
+                              <td>
+                                <lable for="sbjName" class="pull-right">Name:
+                              </td>
+                              <td>
+                                <input type="text" class="form-control" name="sbjName" value="<?=((isset($_GET['update']))?$sbjName:'')?>" minlength="5" maxlength="20" required>
+                              </td>
+                              <td>
+                                <lable for="sbjName" class="pull-right">Description:
+                              </td>
+                              <td>
+                                <input type="text" class="form-control" name="sbjDesc"  value="<?=((isset($_GET['update']))?$sbjDesc:'')?>" minlength="5" maxlength="35" required>
+                              </td> <!-- value="" !-->
+                              <td>
+                                <input type="submit" class="btn btn-primary" name="submit" value="<?=((isset($_GET['update']))?'Update':'Insert')?> Subject">
+                              </td>
+                            </tr>
+                          </table>
+                        </form>
                     </div>
                   </div>
+
+                  <div class="inner_content_w3_agile_info two_in">
+        					  <h2 class="w3_inner_tittle">List of Subject</h2>
+        									<!-- tables -->
+        									<div class="agile-tables">
+        										<div class="w3l-table-info agile_info_shadow">
+                              <table class="table table-hover">
+                                <tr>
+                                  <td style="display:none;"></td>
+                                  <td>#</td>
+                                  <td>Name</td>
+                                  <td>Description</td>
+                                  <td>Update</td>
+                                  <td>Delete</td>
+                                </tr>
+                                <?php
+                                  $sql = "SELECT * FROM subject";
+                                  $query = mysqli_query($db, $sql);
+                                  $no = 0;
+
+                                  while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)):
+                                    $no = $no + 1;
+                                ?>
+
+                                <tr>
+                                  <td style="display:none;"><?=$row['subjectID']?></td>
+                                  <td><?=$no;?></td>
+                                  <td><?=$row['subjectName'];?></td>
+                                  <td><?=$row['subjectDesc'];?></td>
+                                  <td><a href="adminSubject?update=<?=$row['subjectID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-cog"></span></a></td>
+                                  <td><a href="adminSubject?delete=<?=$row['subjectID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-times"></span></a></td>
+                                </tr>
+                              <?php endwhile;?>
+                            </table>
+                          </div>
+        								</div>
+        						</div>
               </div>
 				</div>
 <!-- banner -->
