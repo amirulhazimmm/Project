@@ -5,6 +5,8 @@
 	$name = sanitize($_POST['name']);
 	$pass = sanitize($_POST['password']);
 
+	$pass = md5($pass);
+
 	$sql = "SELECT * FROM staff WHERE staffUsername = '$name' && staffPassword = '$pass'";
 
 	$query = mysqli_query($db, $sql);

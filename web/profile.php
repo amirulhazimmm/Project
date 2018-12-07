@@ -23,11 +23,22 @@
     $phone = $row['staffPhone'];
 	}
 
+	if(isset($_POST['update'])){
+		$user = sanitize($_POST['user']);
+		$email = sanitize($_POST['email']);
+		$pass = sanitize($_POST['pass']);
+		$phone = sanitize($_POST['phone']);
+
+		$pass = md5($pass);
+		$sql = "UPDATE STAFF SET staffUsername = '$user', staffEmail = '$email', staffPassword = '$pass', staffPhone = '$phone' WHERE staffID = '$id'";
+		$query = mysqli_query($db, $sql);
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-<title>Carry mark system</title>
+<title>Profiles</title>
 <!-- custom-theme -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -59,21 +70,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="inner_content_w3_agile_info">
       <div class="agile-tables">
         <div class="w3l-table-info agile_info_shadow">
-          <form>
+          <form action="profile.php" method="post">
             <table class="table table-hover">
+							<in
               <tr>
                 <td rowspan="7" width="300px;">
-                  <img src="<?=$img;?>" class="img-thumbnail" width="200px;">
+                  <img src="<?=$img;?>" class="img-thumbnail" width="65%;">
                 </td>
-                <td>Name: </td>
-                <td><?=$name;?></td>
+                <td>Name</td>
+                <td><?=((isset($_POST['submit']))?'<input type="text" name="name" class="form-control" maxlength="50" minlength="5" value='.$name.' disabled required>':$name)?></td>
               </tr>
-              <tr><td>Matric No.: </td><td><?=$matric?></td></tr>
-              <tr><td>Identification No.: </td><td><?=$ic;?></td></tr>
-              <tr><td>Username: </td><td><?=$user;?></td></tr>
-              <tr><td>Email: </td><td><?=$email;?></td></tr>
-              <tr><td>Password: </td><td><?=$pass;?></td></tr>
-              <tr><td>Phone No.: </td><td><?=$phone;?></td></tr>
+              <tr><td>Matric No.: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="matric" class="form-control" maxlength="10" minlength="10" value='.$matric.' disabled required>':$matric)?></td></tr>
+              <tr><td>Identification No.: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="ic" class="form-control" maxlength="12" minlength="12" value='.$ic.' disabled required>':$ic)?></td></tr>
+              <tr><td>Username: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="user" class="form-control" maxlength="30" minlength="5" value='.$user.' required>':$user)?></td></tr>
+              <tr><td>Email: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="email" class="form-control" maxlength="50" minlength="15" value='.$email.' required>':$email)?></td></tr>
+              <tr><td>Password: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="pass" class="form-control" maxlength="30" minlength="5" value='.$pass.' required>':$pass)?></td></tr>
+              <tr><td>Phone No.: </td><td><?=((isset($_POST['submit']))?'<input type="text" name="phone" class="form-control" maxlength="11" minlength="10" value='.$phone.' required>':$phone)?></td></tr>
+							<tr><td colspan="3"><?=((isset($_POST['submit']))?'':'<input type="submit" name="submit" value="Edit" class="pull-right btn btn-primary">')?><?=((isset($_POST['submit']))?'<input type="submit" name="update" value="Update" class="btn btn-primary pull-right">':'')?><?=((isset($_POST['submit']))?' <a href="profile.php" class="btn btn-primary pull-right">Back</a>':'')?></td></tr>
             </table>
           </form>
         </div>

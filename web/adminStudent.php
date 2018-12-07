@@ -6,17 +6,18 @@
 		header("Location: ../index.html");
 	}
 
+	$sPic = "";
 	$id = $_SESSION['staffID'];
 
   if(isset($_POST['submit'])){
 		$sID = sanitize($_POST['sID']);
-		$sName = sanitize($_POST['sName']);
-		$sUser = sanitize($_POST['sUser']);
-		$sEmail = sanitize($_POST['sEmail']);
-		$sPass = sanitize($_POST['sPass']);
-		$sMatric = sanitize($_POST['sMatric']);
 		$sIC = sanitize($_POST['sIC']);
+		$sPic = sanitize($_POST['sPic1']);
+		$sName = sanitize($_POST['sName']);
+		$sMatric = sanitize($_POST['sMatric']);
+		$sEmail = sanitize($_POST['sEmail']);
 		$sPhone = sanitize($_POST['sPhone']);
+		$sPic1 = sanitize($_POST['sPic1']);
 		$upORin = sanitize($_POST['upORin']);
 
 		//Checking the file
@@ -28,24 +29,25 @@
 
 			if($fileSize < 15000000){
 				if($upORin == "update"){
-					$sql = "UPDATE staff SET staffPic = '$uploadPath', staffName = '$sName', staffUsername = '$sUser', staffEmail = '$sEmail',
-		              staffPassword = '$sPass', staffMatric = '$sMatric', staffIC = '$sIC', staffPhone = '$sPhone' WHERE staffID = '$sID'";
+					$sql = "UPDATE student SET StudentName = '$sName', StudentMatric = '$sMatric', StudentIC = '$sIC', StudentEmail = '$sEmail',
+									StudentPhone = '$sPhone', StudentPic = '$uploadPath' WHERE StudentID = '$sID'";
 		      $query = mysqli_query($db, $sql);
 				}else{
-					$sql = "INSERT INTO staff (staffPic, staffName, staffUsername, staffEmail, staffPassword, staffMatric, staffIC, staffPhone)
-			            VALUES ('$uploadPath', '$sName', '$sUser', '$sEmail', '$sPass', '$sMatric', '$sIC', '$sPhone')";
+					$sql = "INSERT INTO student (StudentName, StudentMatric, StudentIC, StudentEmail, StudentPhone, StudentPic) VALUES
+									('$sName', '$sMatric', '$sIC', '$sEmail', '$sPhone', '$uploadPath')";
 			    $query = mysqli_query($db, $sql);
 				}
 				move_uploaded_file($tmpLoc, $uploadPath);
 			}
 		}else{
 			if($upORin == "update"){
-				$sql = "UPDATE staff SET staffPic = 'images/basicPic.jpg', staffName = '$sName', staffUsername = '$sUser', staffEmail = '$sEmail',
-		            staffPassword = '$sPass', staffMatric = '$sMatric', staffIC = '$sIC', staffPhone = '$sPhone' WHERE staffID = '$sID'";
+				$sql = "UPDATE student SET StudentName = '$sName', StudentMatric = '$sMatric', StudentIC = '$sIC', StudentEmail = '$sEmail',
+								StudentPhone = '$sPhone', StudentPic = '$sPic1' WHERE StudentID = '$sID'";
 		    $query = mysqli_query($db, $sql);
+
 			}else{
-				$sql = "INSERT INTO staff (staffPic, staffName, staffUsername, staffEmail, staffPassword, staffMatric, staffIC, staffPhone)
-								VALUES ('images/basicPic.jpg', '$sName', '$sUser', '$sEmail', '$sPass', '$sMatric', '$sIC', '$sPhone')";
+				$sql = "INSERT INTO student (StudentName, StudentMatric, StudentIC, StudentEmail, StudentPhone, StudentPic) VALUES
+								('$sName', '$sMatric', '$sIC', '$sEmail', '$sPhone', 'images/basicPic.jpg')";
 				$query = mysqli_query($db, $sql);
 			}
 		}
@@ -55,24 +57,23 @@
   if(isset($_GET['delete'])){
     $sID = sanitize($_GET['delete']);
 
-    $sql = "DELETE FROM staff WHERE staffID = '$sID'";
+    $sql = "DELETE FROM student WHERE StudentID = '$sID'";
     $query = mysqli_query($db, $sql);
   }
 
   if(isset($_GET['update'])){
     $sID = sanitize($_GET['update']);
 
-    $sql = "SELECT * FROM staff WHERE staffID = '$sID'";
+    $sql = "SELECT * FROM student WHERE studentID = '$sID'";
     $query = mysqli_query($db, $sql);
     $row = mysqli_fetch_array($query);
-    $sPic = $row['staffPic'];
-		$sName = $row['staffName'];
-		$sUser = $row['staffUsername'];
-		$sEmail = $row['staffEmail'];
-		$sPass = $row['staffPassword'];
-		$sMatric = $row['staffMatric'];
-		$sIC = $row['staffIC'];
-		$sPhone = $row['staffPhone'];
+
+		$sIC = $row['StudentIC'];
+    $sPic = $row['StudentPic'];
+		$sName = $row['StudentName'];
+		$sMatric = $row['StudentMatric'];
+		$sEmail = $row['StudentEmail'];
+		$sPhone = $row['StudentPhone'];
   }
 
 	$sql = "SELECT * FROM staff ";
@@ -132,29 +133,32 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <div class="agile-tables">
                       <div class="w3l-table-info agile_info_shadow">
                         <h3 class="w3_inner_title two"><?=((isset($_GET['update']))?'Update':'Insert')?> Student</h3><br>
-                        <form action="adminStaff.php" method="post" enctype="multipart/form-data" onsubmit="return confirm('Are you sure?')">
+                        <form action="adminStudent.php" method="post" enctype="multipart/form-data" onsubmit="return confirm('Are you sure?')">
                           <table class="table table-hover">
                             <input style="display:none" name="upORin" value="<?=((isset($_GET['update']))?'update':'insert')?>">
                             <input style="display:none" name="sID" value="<?=((isset($_GET['update']))?$sID:'')?>">
-                            <tr>
-															<td rowspan="3" width="5%">
-															  <img src="<?=((isset($_GET['update']))?$sPic:'images/basicPic.jpg')?>" class="img-thumbnail" width="50%"><br><hr>
-															  <input type="file" name="sPic" id="sPic">
+														<input style="display:none" name="sPic1" value="<?=$sPic;?>">
+														<tr>
+															<td rowspan="5" width="5%">
+																<img src="<?=((isset($_GET['update']))?$sPic:'images/basicPic.jpg')?>" class="img-thumbnail" width="50%"><br><hr>
+													    	<input type="file" name="sPic" id="sPic">
 															</td>
-															<td><lable for="sName">Name: <input type="text" class="form-control" name="sName" value="<?=((isset($_GET['update']))?$sName:'')?>" minlength="5" maxlength="50" required></td>
-															<td><lable for="sIC">Identification No.: <input type="text" class="form-control" name="sIC"  value="<?=((isset($_GET['update']))?$sIC:'')?>" minlength="12" maxlength="12" required></td>
-															<td><lable for="sMatric">Matrics No.: <input type="text" class="form-control" name="sMatric"  value="<?=((isset($_GET['update']))?$sMatric:'')?>" minlength="10" maxlength="10" required></td>
-                            </tr>
-														<tr>
-															<td><lable for="sUser">Username: <input type="text" class="form-control" name="sUser"  value="<?=((isset($_GET['update']))?$sUser:'')?>" minlength="5" maxlength="50" required></td>
-															<td><lable for="sEmail">Email: <input type="email" class="form-control" name="sEmail"  value="<?=((isset($_GET['update']))?$sEmail:'')?>" minlength="5" maxlength="50" required></td>
-															<td><lable for="sPass">Password: <input type="text" class="form-control" name="sPass"  value="<?=((isset($_GET['update']))?$sPass:'')?>" minlength="5" maxlength="50" required></td>
+															<td><label for="sName">Name: </label><input type="text" value="<?=((isset($_GET['update']))?$sName:'')?>" class="form-control" name="sName" minlength="10" maxlength="50" required></td>
 														</tr>
 														<tr>
-															<td><lable for="sPass">Phone: <input type="text" class="form-control" name="sPhone"  value="<?=((isset($_GET['update']))?$sPhone:'')?>" minlength="10" maxlength="11" required></td>
+															<td><label for="sIC">Identification No.: </label><input type="text" value="<?=((isset($_GET['update']))?$sIC:'')?>" class="form-control" name="sIC" minlength="12" maxlength="12" required></td>
 														</tr>
 														<tr>
-															<td colspan="4"><input type="submit" class="btn btn-primary pull-right" name="submit" value="<?=((isset($_GET['update']))?'Update':'Insert')?> Student"></td>
+															<td><label for="sMatric">Matric No.: </label><input type="text" value="<?=((isset($_GET['update']))?$sMatric:'')?>" class="form-control" name="sMatric" minlength="10" maxlength="10" required></td>
+														</tr>
+														<tr>
+															<td><label for="sEmail">Email: </label><input type="email" value="<?=((isset($_GET['update']))?$sEmail:'')?>" class="form-control" name="sEmail" minlength="10" maxlength="50" required></td>
+														</tr>
+														<tr>
+															<td><label for="sPhone">Phone No.: </label><input type="text" value="<?=((isset($_GET['update']))?$sPhone:'')?>" class="form-control" name="sPhone" minlength="10" maxlength="11" required></td>
+														</tr>
+														<tr>
+														  <td colspan="2"><input type="submit" class="btn btn-primary pull-right" name="submit" value="<?=((isset($_GET['update']))?'Update':'Insert')?> Student"></td>
 														</tr>
                           </table>
                         </form>
@@ -163,9 +167,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
                   <div class="inner_content_w3_agile_info two_in">
         					  <h2 class="w3_inner_tittle">List of Student</h2>
-        						<!-- tables -->
-        						<div class="agile-tables">
-        						<div class="w3l-table-info agile_info_shadow">
+        									<!-- tables -->
+        									<div class="agile-tables">
+        										<div class="w3l-table-info agile_info_shadow">
                               <table class="table table-hover">
                                 <tr>
                                   <td style="display:none;"></td>
@@ -180,7 +184,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 																	<td>Delete</td>
                                 </tr>
                                 <?php
-                                  $sql = "SELECT * FROM staff";
+                                  $sql = "SELECT * FROM student";
                                   $query = mysqli_query($db, $sql);
                                   $no = 0;
 
@@ -189,18 +193,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 ?>
 
                                 <tr>
-                                  <td style="display:none;"><?=$row['staffID']?></td>
+                                  <td style="display:none;"><?=$row['StudentID']?></td>
                                   <td><?=$no;?></td>
-																	<td width="10%"><img src="<?=$row['staffPic'];?>" width="100%"></td>
-                                  <td><?=$row['staffName'];?></td>
-                                  <td><?=$row['staffUsername'];?></td>
-																	<td><?=$row['staffEmail'];?></td>
-																	<td><?=$row['staffPassword'];?></td>
-																	<td><?=$row['staffMatric'];?></td>
-																	<td><?=$row['staffIC'];?></td>
-																	<td><?=$row['staffPhone']?></td>
-                                  <td><a href="adminStaff?update=<?=$row['staffID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-cog"></span></a></td>
-                                  <td><a href="adminStaff?delete=<?=$row['staffID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-times"></span></a></td>
+																	<td width="10%"><img src="<?=$row['StudentPic'];?>" width="100%"></td>
+																	<td><?=$row['StudentName'];?></td>
+																	<td><?=$row['StudentMatric'];?></td>
+																	<td><?=$row['StudentIC'];?></td>
+																	<td><?=$row['StudentEmail'];?></td>
+																	<td><?=$row['StudentPhone']?></td>
+                                  <td><a href="adminStudent?update=<?=$row['StudentID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-cog"></span></a></td>
+                                  <td><a href="adminStudent?delete=<?=$row['StudentID'];?>" onclick="return confirm('Are you sure?')"><span class="fa fa-times"></span></a></td>
                                 </tr>
                               <?php endwhile;?>
                             </table>

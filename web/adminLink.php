@@ -16,14 +16,14 @@
 		$img = $row['staffPic'];
     }
 
-    if(isset($_POST['submit'])){        
+    if(isset($_POST['submit'])){
         $staff1 = sanitize($_POST['staff1']);
         $student1 = sanitize($_POST['student1']);
         $class1 = sanitize($_POST['class1']);
         $subject1 = sanitize($_POST['subject1']);
 
-        $sql = "INSERT INTO carrymark(markLab, markQ_A, markTest1, markTest2, markProposal, markPresentation, markReport) 
-                VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+        $sql = "INSERT INTO carrymark(markLab, markQ_A, markTest1, markTest2, markProposal, markPresentation, markReport)
+                VALUES ('0', '0', '0', '0', '0', '0', '0')";
         $query = mysqli_query($db, $sql);
 
         if(!$query){
@@ -32,7 +32,7 @@
 
         $carryMID = mysqli_insert_id($db);
 
-        $sql = "INSERT INTO subjecttook(studentID, carryMarkID, classID, subjectID, staffID) 
+        $sql = "INSERT INTO subjecttook(studentID, carryMarkID, classID, subjectID, staffID)
                 VALUES ('$student1', $carryMID, '$class1','$subject1', '$staff1')";
         $query = mysqli_query($db, $sql);
 
@@ -42,7 +42,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-<title>Student</title>
+<title>Link</title>
 <!-- custom-theme -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -76,18 +76,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="w3l_agileits_breadcrumbs_inner">
               <ul>
                 <li><a href="adminindex.php">Home</a><span>«</span></li>
-                <li>Details</li>
+                <li>Link</li>
               </ul>
             </div>
           </div>
 				    <!-- /inner_content_w3_agile_info-->
             <div class="inner_content_w3_agile_info two_in" >
-              <h2 class="w3_inner_tittle">Details</h2>
+              <h2 class="w3_inner_tittle">Link</h2>
                     <!-- tables -->
                     <div class="agile-tables">
                       <div class="w3l-table-info agile_info_shadow">
-                        
-                        <form action="adminLink.php" method="post" enctype="multipart/form-data" onsubmit="return confirm('Are you sure?')">
+
+                        <form action="adminLink.php" method="post"  onsubmit="return confirm('Are you sure?')">
                           <table class="table table-hover">
 
 
@@ -104,7 +104,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             <tr>
                                         <td style="display:none;"></td>
                                         <td>
-                                            <select name="staff1">
+                                            <select name="staff1" class="form-control" required>
+																							<option value='' selected>---</option>
                                                 <?php
                                                     $sql = "SELECT * FROM staff where staffType = 2";
 
@@ -115,14 +116,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                                         $no = $no + 1;
                                                     ?>
 
-                                                    <option value="<?=$row['staffID'];?>"><?=$row['staffName'];?></option>    
+                                                    <option value="<?=$row['staffID'];?>"><?=$row['staffName'];?></option>
                                                 <?php endwhile;?>
                                             </select>
                                         </td>
                                         <!-- ====STUDENT==== -->
 
                                         <td>
-                                            <select name="student1">
+                                            <select name="student1" class="form-control" required>
+																							<option value='' selected>---</option>
                                                 <?php
                                                     $sql = "SELECT * FROM student";
 
@@ -133,13 +135,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                                         $no = $no + 1;
                                                     ?>
 
-                                                    <option value="<?=$row['StudentID'];?>"><?=$row['StudentName'];?></option>    
+                                                    <option value="<?=$row['StudentID'];?>"><?=$row['StudentName'];?></option>
                                                 <?php endwhile;?>
                                             </select>
                                         </td>
                                          <!-- ====SUBJECT==== -->
                                          <td>
-                                            <select name="subject1">
+                                            <select name="subject1" class="form-control" required>
+																							<option value='' selected>---</option>
                                                 <?php
                                                     $sql = "SELECT * FROM subject ";
 
@@ -150,13 +153,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                                         $no = $no + 1;
                                                     ?>
 
-                                                    <option value="<?=$row['subjectID'];?>"><?=$row['subjectName'];?></option>    
+                                                    <option value="<?=$row['subjectID'];?>"><?=$row['subjectName'];?></option>
                                                 <?php endwhile;?>
                                             </select>
                                         </td>
                                         <!-- =====GROUP=== -->
                                         <td>
-                                            <select name="class1">
+                                            <select name="class1" class="form-control" required>
+																							<option value='' selected>---</option>
                                                 <?php
                                                     $sql = "SELECT * FROM class";
 
@@ -167,20 +171,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                                         $no = $no + 1;
                                                     ?>
 
-                                                    <option value="<?=$row['ClassID'];?>"><?=$row['ClassName'];?></option>    
+                                                    <option value="<?=$row['ClassID'];?>"><?=$row['ClassName'];?></option>
                                                 <?php endwhile;?>
                                             </select>
                                         </td>
                                         <td><input type="submit" name="submit"  class="btn btn-hover btn-dark btn-block"></td>
-                                    </tr>					
+                                    </tr>
                           </table>
                         </form>
                     </div>
                   </div>
-
-                  
-
-                  
+								</div>
+							</div>
+<br><br><br><br><br>
 <!-- banner -->
 <!--copy rights start here-->
 <div class="copyrights">

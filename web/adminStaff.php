@@ -6,6 +6,7 @@
 		header("Location: ../index.html");
 	}
 
+	$sPic = "";
 	$id = $_SESSION['staffID'];
 
   if(isset($_POST['submit'])){
@@ -18,6 +19,9 @@
 		$sIC = sanitize($_POST['sIC']);
 		$sPhone = sanitize($_POST['sPhone']);
 		$upORin = sanitize($_POST['upORin']);
+		$sPic1 = sanitize($_POST['sPic1']);
+
+		$sPass = md5($sPass);
 
 		//Checking the file
 		if(!empty($_FILES['sPic']['name'])){
@@ -40,9 +44,13 @@
 			}
 		}else{
 			if($upORin == "update"){
-				$sql = "UPDATE staff SET staffPic = 'images/basicPic.jpg', staffName = '$sName', staffUsername = '$sUser', staffEmail = '$sEmail',
-		            staffPassword = '$sPass', staffMatric = '$sMatric', staffIC = '$sIC', staffPhone = '$sPhone', WHERE staffID = '$sID'";
+				$sql = "UPDATE staff SET staffPic = '$sPic1', staffName = '$sName', staffUsername = '$sUser', staffEmail = '$sEmail',
+		            staffPassword = '$sPass', staffMatric = '$sMatric', staffIC = '$sIC', staffPhone = '$sPhone' WHERE staffID = '$sID'";
 		    $query = mysqli_query($db, $sql);
+
+				if(!$query){
+					die('error '.mysqli_error($db));
+				}
 			}else{
 				$sql = "INSERT INTO staff (staffPic, staffName, staffUsername, staffEmail, staffPassword, staffMatric, staffIC, staffPhone, staffType)
 								VALUES ('images/basicPic.jpg', '$sName', '$sUser', '$sEmail', '$sPass', '$sMatric', '$sIC', '$sPhone', '2')";
@@ -136,6 +144,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                           <table class="table table-hover">
                             <input style="display:none" name="upORin" value="<?=((isset($_GET['update']))?'update':'insert')?>">
                             <input style="display:none" name="sID" value="<?=((isset($_GET['update']))?$sID:'')?>">
+														<input style="display:none" name="sPic1" value="<?=$sPic;?>">
                             <tr>
 															<td rowspan="3" width="5%">
 															  <img src="<?=((isset($_GET['update']))?$sPic:'images/basicPic.jpg')?>" class="img-thumbnail" width="50%"><br><hr>
