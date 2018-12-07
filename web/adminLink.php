@@ -6,45 +6,43 @@
 		header("Location: ../index.html");
 	}
 
-	$id = $_SESSION['staffID'];
+    $id = $_SESSION['staffID'];
 
-	$sql = "SELECT * FROM staff ";
+    $sql = "SELECT * FROM staff ";
 	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
+    $row = mysqli_fetch_array($query);
 
 	if(mysqli_num_rows($query) > 0){
 		$img = $row['staffPic'];
+    }
+
+    if(isset($_POST['submit'])){        
+        $staff1 = sanitize($_POST['staff1']);
+        $student1 = sanitize($_POST['student1']);
+        $class1 = sanitize($_POST['class1']);
+        $subject1 = sanitize($_POST['subject1']);
+
+        $sql = "INSERT INTO carrymark(markLab, markQ_A, markTest1, markTest2, markProposal, markPresentation, markReport) 
+                VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+        $query = mysqli_query($db, $sql);
+
+        if(!$query){
+            die(mysqli_error($db));
+        }
+
+        $carryMID = mysqli_insert_id($db);
+
+        $sql = "INSERT INTO subjecttook(studentID, carryMarkID, classID, subjectID, staffID) 
+                VALUES ('$student1', $carryMID, '$class1','$subject1', '$staff1')";
+        $query = mysqli_query($db, $sql);
+
+
 	}
-
-	$sql = "SELECT count(subjectName) as amtsbj FROM subject";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSbj = $row['amtsbj'];
-
-	$sql = "SELECT count(ClassName) as amtCls FROM class";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtCls = $row['amtCls'];
-
-	$sql = "SELECT count(carryMarkID) as amtcrm FROM carrymark";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtcmk = $row['amtcrm'];
-
-	$sql = "SELECT count(staffID) as amtSt FROM staff";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSt = $row['amtSt'];
-
-	$sql = "SELECT count(StudentID) as amtSdt FROM student";
-	$query = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($query);
-	$amtSdt = $row['amtSdt'];
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-<title>Admin Index</title>
+<title>Student</title>
 <!-- custom-theme -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -73,61 +71,116 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<!-- //w3_agileits_top_nav-->
 		<!-- /inner_content-->
 				<div class="inner_content">
+
+          <div class="w3l_agileits_breadcrumbs">
+            <div class="w3l_agileits_breadcrumbs_inner">
+              <ul>
+                <li><a href="adminindex.php">Home</a><span>«</span></li>
+                <li>Details</li>
+              </ul>
+            </div>
+          </div>
 				    <!-- /inner_content_w3_agile_info-->
-					<div class="inner_content_w3_agile_info">
-					<!-- /agile_top_w3_grids-->
-					   <div class="agile_top_w3_grids">
-					          <ul class="ca-menu">
-									<li>
-										<a href="adminSubject.php">
-											<i class="fa fa-database" aria-hidden="true"></i>
-											<div class="ca-content">
-												<h4 class="ca-main"><?=$amtSbj;?></h4>
-												<h3 class="ca-sub">Subject</h3>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a href="adminClass.php">
-											<i class="fa fa-database" aria-hidden="true"></i>
-											<div class="ca-content">
-												<h4 class="ca-main two"><?=$amtCls;?></h4>
-												<h3 class="ca-sub two">Class</h3>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a href="adminLink.php">
-											<i class="fa fa-database" aria-hidden="true"></i>
-											<div class="ca-content">
-												<h4 class="ca-main"><?=$amtcmk;?></h4>
-												<h3 class="ca-sub">Carry Mark</h3>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a href="adminStaff.php">
-											<i class="fa fa-database" aria-hidden="true"></i>
-											<div class="ca-content">
-												<h4 class="ca-main two"><?=$amtSt;?></h4>
-												<h3 class="ca-sub two">Staff</h3>
-											</div>
-										</a>
-									</li>
-									<li>
-										<a href="adminStudent.php">
-											<i class="fa fa-database" aria-hidden="true"></i>
-											<div class="ca-content">
-												<h4 class="ca-main"><?=$amtSdt;?></h4>
-												<h3 class="ca-sub">Student</h3>
-											</div>
-										</a>
-									</li>
-									<div class="clearfix"></div>
-								</ul>
-					   </div>
-						</div>
-					</div>
+            <div class="inner_content_w3_agile_info two_in" >
+              <h2 class="w3_inner_tittle">Details</h2>
+                    <!-- tables -->
+                    <div class="agile-tables">
+                      <div class="w3l-table-info agile_info_shadow">
+                        
+                        <form action="adminLink.php" method="post" enctype="multipart/form-data" onsubmit="return confirm('Are you sure?')">
+                          <table class="table table-hover">
+
+
+
+                            <!-- LECTURER -->
+                            <tr>
+                                <td>Lecturer</td>
+                                <td>Student</td>
+                                <td>Subject</td>
+                                <td>Group</td>
+                                <td></td>
+
+                            </tr>
+                            <tr>
+                                        <td style="display:none;"></td>
+                                        <td>
+                                            <select name="staff1">
+                                                <?php
+                                                    $sql = "SELECT * FROM staff where staffType = 2";
+
+                                                    $query = mysqli_query($db, $sql);
+                                                    $no = 0;
+
+                                                    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC) ):
+                                                        $no = $no + 1;
+                                                    ?>
+
+                                                    <option value="<?=$row['staffID'];?>"><?=$row['staffName'];?></option>    
+                                                <?php endwhile;?>
+                                            </select>
+                                        </td>
+                                        <!-- ====STUDENT==== -->
+
+                                        <td>
+                                            <select name="student1">
+                                                <?php
+                                                    $sql = "SELECT * FROM student";
+
+                                                    $query = mysqli_query($db, $sql);
+                                                    $no = 0;
+
+                                                    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC) ):
+                                                        $no = $no + 1;
+                                                    ?>
+
+                                                    <option value="<?=$row['StudentID'];?>"><?=$row['StudentName'];?></option>    
+                                                <?php endwhile;?>
+                                            </select>
+                                        </td>
+                                         <!-- ====SUBJECT==== -->
+                                         <td>
+                                            <select name="subject1">
+                                                <?php
+                                                    $sql = "SELECT * FROM subject ";
+
+                                                    $query = mysqli_query($db, $sql);
+                                                    $no = 0;
+
+                                                    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC) ):
+                                                        $no = $no + 1;
+                                                    ?>
+
+                                                    <option value="<?=$row['subjectID'];?>"><?=$row['subjectName'];?></option>    
+                                                <?php endwhile;?>
+                                            </select>
+                                        </td>
+                                        <!-- =====GROUP=== -->
+                                        <td>
+                                            <select name="class1">
+                                                <?php
+                                                    $sql = "SELECT * FROM class";
+
+                                                    $query = mysqli_query($db, $sql);
+                                                    $no = 0;
+
+                                                    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC) ):
+                                                        $no = $no + 1;
+                                                    ?>
+
+                                                    <option value="<?=$row['ClassID'];?>"><?=$row['ClassName'];?></option>    
+                                                <?php endwhile;?>
+                                            </select>
+                                        </td>
+                                        <td><input type="submit" name="submit"  class="btn btn-hover btn-dark btn-block"></td>
+                                    </tr>					
+                          </table>
+                        </form>
+                    </div>
+                  </div>
+
+                  
+
+                  
 <!-- banner -->
 <!--copy rights start here-->
 <div class="copyrights">

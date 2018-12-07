@@ -108,7 +108,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                           <td><?=$row['subjectName'];?></td>
                           <td><?=$row['subjectDesc']?></td>
                           <td><?=$row['className'];?></td>
-                          <td><a href="viewStudent.php?id=<?=$row['classID'];?>" class="btn btn-hover btn-dark btn-block">View Class</a></td>
+                          <!-- <td><a href="viewStudent.php?id=<?=$row['classID'];?>" class="btn btn-hover btn-dark btn-block">View Class</a></td> -->
                         </tr>
                       <?php endwhile;?>
                     </table>
