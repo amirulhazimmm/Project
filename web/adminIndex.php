@@ -123,6 +123,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											</div>
 										</a>
 									</li>
+									<li>
+										<a href="adminViewClass.php">
+											<i class="fa fa-database" aria-hidden="true"></i>
+											<div class="ca-content">
+												<h4 class="ca-main two">1</h4>
+												<h3 class="ca-sub two">Carry Mark</h3>
+											</div>
+										</a>
+									</li>
 									<div class="clearfix"></div>
 								</ul>
 					   </div>

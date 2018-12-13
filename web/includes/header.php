@@ -66,7 +66,7 @@
 									<li class="dropdown profile_details_drop">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 											<div class="profile_img">
-												<span class="prfil-img"><img src="<?=$img;?>" height="60" width="60" alt=""> </span>
+												<span class="prfil-img"><img src="<?=$img;?>" height="60" width="30" alt=""> </span>
 											</div>
 										</a>
 										<ul class="dropdown-menu drp-mnu">

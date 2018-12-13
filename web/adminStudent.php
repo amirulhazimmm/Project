@@ -57,8 +57,19 @@
   if(isset($_GET['delete'])){
     $sID = sanitize($_GET['delete']);
 
-    $sql = "DELETE FROM student WHERE StudentID = '$sID'";
-    $query = mysqli_query($db, $sql);
+		$sql = "SELECT carryMarkID from subjecttook where studentID = '$sID'";
+		$query = mysqli_query($db, $sql);
+		$row = mysqli_fetch_array($query, MYSQLI_ASSOC);
+		$cID = $row['carryMarkID'];
+
+		$sql = "DELETE FROM student WHERE StudentID = '$sID'";
+		$query = mysqli_query($db, $sql);
+
+	  $sql = "DELETE FROM subjecttook WHERE StudentID = '$sID'";
+		$query = mysqli_query($db, $sql);
+
+		$sql = "DELETE FROM carrymark WHERE carryMarkID = '$cID'";
+		$query = mysqli_query($db, $sql);
   }
 
   if(isset($_GET['update'])){

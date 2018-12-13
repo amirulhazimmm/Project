@@ -61,7 +61,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<div class="w3l_agileits_breadcrumbs">
 							<div class="w3l_agileits_breadcrumbs_inner">
 								<ul>
-									<li><a href="main-page.php">Home</a><span>«</span></li>
+									<li><a href="adminIndex.php">Home</a><span>«</span></li>
 
 									<li>View Class</li>
 								</ul>
@@ -75,13 +75,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									<!-- tables -->
 									<div class="agile-tables">
 										<div class="w3l-table-info agile_info_shadow">
-										 <h3 class="w3_inner_tittle two">Class</h3>
                       <table class="table table-hover">
                         <tr>
                           <th style="display:none;s"></th>
                           <th>#</th>
                           <th>Code</th>
                           <th>Program</th>
+                          <th>Lecturer</th>
                           <th>Class</th>
                           <th>View</th>
                         </tr>
@@ -93,9 +93,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                           RIGHT JOIN subject s on s.subjectID = stk.subjectID
                           WHERE st.staffID = 3*/
 
-                          $sql = "SELECT DISTINCT c.className, c.classID, s.subjectDesc, s.subjectName FROM subjecttook stk
+                          $sql = "SELECT DISTINCT st.staffName, c.className, c.classID, s.subjectDesc, s.subjectName FROM subjecttook stk
                                   INNER JOIN staff st on stk.staffID = st.staffID LEFT JOIN class c on c.classID = stk.classID
-                                  RIGHT JOIN subject s on s.subjectID = stk.subjectID WHERE st.staffID = $id";
+                                  RIGHT JOIN subject s on s.subjectID = stk.subjectID";
                           $result = mysqli_query($db, $sql);
                           $no = 0;
 
@@ -108,8 +108,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                           <td><?=$no;?></td>
                           <td><?=$row['subjectName'];?></td>
                           <td><?=$row['subjectDesc']?></td>
+                          <td><?=$row['staffName']?></td>
                           <td><?=$row['className'];?></td>
-                          <td><a href="displayCarrymark.php?id=<?=$row['classID'];?>" class="btn btn-hover btn-dark btn-block">View Class</a></td>
+                          <td><a href="adminInsertCarryMark.php?clsID=<?=$row['classID'];?>" class="btn btn-hover btn-dark btn-block">View Class</a></td>
                         </tr>
                       <?php endwhile;?>
                     </table>
